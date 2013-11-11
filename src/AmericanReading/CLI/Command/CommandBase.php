@@ -7,6 +7,8 @@ namespace AmericanReading\CLI\Command;
  */
 abstract class CommandBase implements CommandInterface
 {
+    /** @var bool */
+    public $passthru = false;
     /** @var int The exit code from the last command sent to exec() */
     private $statusCode;
     /** @var array List of lines output from the last command sent to exec() */
@@ -17,7 +19,11 @@ abstract class CommandBase implements CommandInterface
      */
     public function run()
     {
-        exec($this->getCommandLine(), $this->results, $this->statusCode);
+        if ($this->passthru) {
+            passthru($this->getCommandLine(), $this->statusCode);
+        } else {
+            exec($this->getCommandLine(), $this->results, $this->statusCode);
+        }
     }
 
     /**
